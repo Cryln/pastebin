@@ -192,7 +192,23 @@ async function handleSpaEntry(req: Request, env: Env) {
   // NOTE: Workers Assets may redirect `/index.html` -> `/` (307/301) depending on settings.
   // Fetch `/` to get the SPA entry document without changing the browser URL.
   url.pathname = '/'
-  return env.ASSETS.fetch(new Request(url, req))
+  const res = await env.ASSETS.fetch(new Request(url, req))
+
+  const contentType = res.headers.get('content-type') ?? ''
+  if (!contentType.includes('text/html')) return res
+  if (!env.TURNSTILE_SITE_KEY) return res
+
+  const html = await res.text()
+  const updated = html.replace(
+    /data-sitekey="\{\{TURNSTILE_SITE_KEY}}"/,
+    `data-sitekey="${env.TURNSTILE_SITE_KEY}"`
+  )
+
+  return new Response(updated, {
+    status: res.status,
+    statusText: res.statusText,
+    headers: res.headers
+  })
 }
 
 function withSecurityHeaders(res: Response) {

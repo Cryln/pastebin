@@ -19,4 +19,6 @@ export type Env = {
   MAX_EXPIRES_SECONDS: string
   // Optional: when set, Cloudflare Turnstile verification is enforced on writes.
   TURNSTILE_SECRET?: string
+  // Optional: Turnstile site key, injected into HTML at response time.
+  TURNSTILE_SITE_KEY?: string
 }
