@@ -475,6 +475,11 @@ function init() {
   initEditors()
   bindComposeUI()
 
+  // 初始化验证码组件（如果后端配置了 Turnstile）
+  initCaptcha().catch(() => {
+    // 静默失败：如果后端未配置或脚本未加载，不影响正常使用
+  })
+
   const copyCodeBtn = $('copyCode')
   if (copyCodeBtn) {
     copyCodeBtn.addEventListener('click', async () => {
@@ -497,3 +502,43 @@ function init() {
 }
 
 window.addEventListener('DOMContentLoaded', init)
+
+async function initCaptcha() {
+  const container = $('captcha')
+  if (!container) return
+
+  let siteKey = ''
+  try {
+    const res = await fetch('/api/config')
+    if (!res.ok) return
+    const body = await res.json().catch(() => null)
+    if (!body || typeof body.turnstileSiteKey !== 'string' || !body.turnstileSiteKey) return
+    siteKey = body.turnstileSiteKey
+  } catch {
+    return
+  }
+
+  container.classList.add('cf-turnstile')
+  container.setAttribute('data-sitekey', siteKey)
+
+  const render = () => {
+    if (!window.turnstile || !window.turnstile.render) return false
+    try {
+      window.turnstile.render('#captcha', { sitekey: siteKey })
+      return true
+    } catch {
+      return false
+    }
+  }
+
+  if (render()) return
+
+  let attempts = 0
+  const maxAttempts = 20
+  const timer = setInterval(() => {
+    attempts += 1
+    if (render() || attempts >= maxAttempts) {
+      clearInterval(timer)
+    }
+  }, 300)
+}

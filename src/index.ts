@@ -226,10 +226,11 @@ function withSecurityHeaders(res: Response) {
       "default-src 'self'",
       "img-src 'self' data:",
       "style-src 'self' https://cdnjs.cloudflare.com",
-      "script-src 'self' https://cdnjs.cloudflare.com",
+      "script-src 'self' https://cdnjs.cloudflare.com https://challenges.cloudflare.com",
       "connect-src 'self'",
       "base-uri 'none'",
-      "frame-ancestors 'none'"
+      "frame-ancestors 'none'",
+      "frame-src 'self' https://challenges.cloudflare.com"
     ].join('; ')
   )
   return new Response(res.body, { status: res.status, statusText: res.statusText, headers })
@@ -240,6 +241,10 @@ export default {
     const url = new URL(req.url)
 
     if (url.pathname === '/api/health') return json({ ok: true })
+
+    if (url.pathname === '/api/config' && req.method === 'GET') {
+      return json({ turnstileSiteKey: env.TURNSTILE_SITE_KEY ?? null })
+    }
 
     if (url.pathname === '/api/paste' && req.method === 'POST') {
       return handleCreatePaste(req, env)
