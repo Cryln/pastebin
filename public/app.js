@@ -18,6 +18,7 @@ const i18n = {
     copy: 'Copy',
     copyCode: 'Copy code',
     copied: 'Copied',
+    captchaRequired: 'Please complete captcha',
     uploading: 'Uploading...',
     loading: 'Loading...',
     selectFile: 'Select a file',
@@ -41,6 +42,7 @@ const i18n = {
     copy: '复制',
     copyCode: '复制代码',
     copied: '已复制',
+    captchaRequired: '请先完成验证码',
     uploading: '上传中...',
     loading: '加载中...',
     selectFile: '请选择文件',
@@ -212,6 +214,10 @@ function getCaptchaToken() {
   }
 }
 
+function isCaptchaEnabled() {
+  return !!document.querySelector('.cf-turnstile')
+}
+
 async function createPaste() {
   const modeEl = $('mode')
   const filenameEl = $('filename')
@@ -226,7 +232,12 @@ async function createPaste() {
   const language = syntaxEl.value || undefined
   const expiresInSeconds = expiresEl.value
 
-  const captchaToken = getCaptchaToken()
+  const captchaEnabled = isCaptchaEnabled()
+  const captchaToken = captchaEnabled ? getCaptchaToken() : ''
+  if (captchaEnabled && !captchaToken) {
+    setStatus(statusEl, t('captchaRequired'))
+    return
+  }
 
   setStatus(statusEl, t('uploading'))
   show($('result'), false)
