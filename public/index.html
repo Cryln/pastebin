@@ -5,9 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Paste</title>
     <link rel="stylesheet" href="/app.css" />
+
     <link
       rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css"
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/material-darker.min.css"
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/choices.js/10.2.0/choices.min.css"
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
@@ -45,8 +58,25 @@
             </select>
           </div>
           <div class="field">
-            <label id="syntaxLabel" for="syntax">Syntax (optional)</label>
-            <input id="syntax" type="text" placeholder="js / ts / python ..." />
+            <label id="syntaxLabel" for="syntax">Syntax</label>
+            <select id="syntax">
+              <option value="">Plain text</option>
+              <option value="shell">Shell</option>
+              <option value="javascript">JavaScript</option>
+              <option value="json">JSON</option>
+              <option value="markdown">Markdown</option>
+              <option value="python">Python</option>
+              <option value="rust">Rust</option>
+              <option value="sql">SQL</option>
+              <option value="toml">TOML</option>
+              <option value="typescript">TypeScript</option>
+              <option value="xml">XML</option>
+              <option value="yaml">YAML</option>
+              <option value="go">Go</option>
+              <option value="java">Java</option>
+              <option value="htmlmixed">HTML</option>
+              <option value="css">CSS</option>
+            </select>
           </div>
           <div class="field">
             <label id="modeLabel" for="mode">Mode</label>
@@ -96,13 +126,28 @@
             <a class="btn" href="/">New</a>
           </div>
         </div>
-        <pre class="code"><code id="codeBlock"></code></pre>
+        <textarea id="viewerText" class="viewerText" spellcheck="false"></textarea>
         <div id="viewStatus" class="status"></div>
       </section>
     </main>
 
     <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"
+      src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/mode/loadmode.min.js"
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/meta.min.js"
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/choices.js/10.2.0/choices.min.js"
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     ></script>

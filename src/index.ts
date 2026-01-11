@@ -161,7 +161,9 @@ async function handleGetRaw(env: Env, id: string, download: boolean) {
 async function handleSpaEntry(req: Request, env: Env) {
   // Serve SPA for dynamic routes like /p/:id
   const url = new URL(req.url)
-  url.pathname = '/index.html'
+  // NOTE: Workers Assets may redirect `/index.html` -> `/` (307/301) depending on settings.
+  // Fetch `/` to get the SPA entry document without changing the browser URL.
+  url.pathname = '/'
   return env.ASSETS.fetch(new Request(url, req))
 }
 

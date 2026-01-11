@@ -81,6 +81,115 @@ textarea {
   resize: vertical;
 }
 
+/* CodeMirror editor */
+.CodeMirror {
+  height: 360px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 13px;
+}
+
+/* Blend CodeMirror theme into the app's glassy panels */
+.cm-s-material-darker.CodeMirror {
+  background: rgba(255, 255, 255, 0.06) !important;
+}
+
+.cm-s-material-darker .CodeMirror-gutters {
+  background: rgba(255, 255, 255, 0.04) !important;
+}
+
+.cm-s-material-darker .CodeMirror-linenumber {
+  color: rgba(255, 255, 255, 0.55) !important;
+}
+
+.cm-s-material-darker .CodeMirror-cursor {
+  border-left-color: rgba(255, 255, 255, 0.85) !important;
+}
+
+.cm-s-material-darker .CodeMirror-selected {
+  background: rgba(167, 139, 250, 0.20) !important;
+}
+
+.cm-s-material-darker.CodeMirror-focused {
+  border-color: rgba(125, 211, 252, 0.35) !important;
+  box-shadow: 0 0 0 3px rgba(125, 211, 252, 0.12);
+}
+
+.CodeMirror-gutters {
+  border-right: 1px solid var(--border);
+}
+
+.viewerText {
+  display: none;
+}
+
+/* Choices.js (searchable selects) */
+.choices {
+  margin: 0;
+}
+
+.choices__inner {
+  background: var(--panel2) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 12px !important;
+  color: var(--text) !important;
+  padding: 6px 10px !important;
+  min-height: 40px !important;
+}
+
+.choices__list--single {
+  padding: 3px 22px 3px 2px !important;
+}
+
+.choices__placeholder {
+  opacity: 0.75;
+}
+
+.choices[data-type*='select-one']::after {
+  border-color: rgba(255, 255, 255, 0.65) transparent transparent transparent !important;
+}
+
+.choices[data-type*='select-one'].is-open::after {
+  border-color: transparent transparent rgba(255, 255, 255, 0.65) transparent !important;
+}
+
+.choices__list--dropdown,
+.choices__list[aria-expanded] {
+  background: rgba(12, 16, 30, 0.98) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.55);
+}
+
+.choices__item,
+.choices__item--selectable {
+  color: var(--text) !important;
+}
+
+.choices__list--dropdown .choices__item--selectable.is-highlighted {
+  background: rgba(167, 139, 250, 0.16) !important;
+}
+
+.choices__list--dropdown .choices__item--selectable {
+  padding: 10px 12px;
+}
+
+.choices__input {
+  background: transparent !important;
+  color: var(--text) !important;
+}
+
+.choices__input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.choices.is-focused .choices__inner,
+.choices.is-open .choices__inner {
+  border-color: rgba(125, 211, 252, 0.35) !important;
+  box-shadow: 0 0 0 3px rgba(125, 211, 252, 0.12);
+}
+
 .actions {
   display: flex;
   align-items: center;
@@ -155,3 +264,31 @@ pre.code code {
 .select { display: flex; align-items: center; gap: 8px; }
 .label { color: var(--muted); font-size: 13px; }
 
+/* Prevent the topbar language selector from wrapping */
+.topbar .select {
+  flex-wrap: nowrap;
+}
+
+.topbar .choices {
+  min-width: 170px;
+  flex: 0 0 auto;
+}
+
+.topbar .label {
+  white-space: nowrap;
+}
+
+.topbar .choices__inner,
+.topbar .choices__list,
+.topbar .choices__list--single,
+.topbar .choices__item,
+.topbar .choices__item--selectable {
+  white-space: nowrap !important;
+  word-break: normal !important;
+  overflow-wrap: normal !important;
+}
+
+.topbar .choices__list--single .choices__item {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
