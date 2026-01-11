@@ -15,6 +15,9 @@ const i18n = {
     raw: 'Raw',
     paste: 'Paste',
     download: 'Download',
+    copy: 'Copy',
+    copyCode: 'Copy code',
+    copied: 'Copied',
     uploading: 'Uploading...',
     loading: 'Loading...',
     selectFile: 'Select a file',
@@ -35,6 +38,9 @@ const i18n = {
     raw: '原始',
     paste: '粘贴',
     download: '下载',
+    copy: '复制',
+    copyCode: '复制代码',
+    copied: '已复制',
     uploading: '上传中...',
     loading: '加载中...',
     selectFile: '请选择文件',
@@ -80,6 +86,36 @@ function applyI18n() {
   setText('rawLabel', t('raw'))
   setText('viewTitle', t('paste'))
   setText('downloadBtn', t('download'))
+  setText('copyLink', t('copy'))
+  setText('copyCode', t('copyCode'))
+}
+
+async function copyToClipboard(text) {
+  if (!text) return false
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      await navigator.clipboard.writeText(text)
+      return true
+    }
+  } catch {
+    // fallback below
+  }
+
+  try {
+    const ta = document.createElement('textarea')
+    ta.value = text
+    ta.setAttribute('readonly', 'true')
+    ta.style.position = 'fixed'
+    ta.style.left = '-9999px'
+    ta.style.top = '0'
+    document.body.appendChild(ta)
+    ta.select()
+    const ok = document.execCommand('copy')
+    document.body.removeChild(ta)
+    return ok
+  } catch {
+    return false
+  }
 }
 
 function show(el, on) {
@@ -227,6 +263,12 @@ async function createPaste() {
   }
   show($('result'), true)
   setStatus(statusEl, '')
+
+  const copyBtn = $('copyLink')
+  if (copyBtn) {
+    copyBtn.disabled = false
+    copyBtn.dataset.href = String(url)
+  }
 }
 
 async function loadPaste(id) {
@@ -322,6 +364,21 @@ function bindComposeUI() {
     })
   }
 
+  const copyLinkBtn = $('copyLink')
+  if (copyLinkBtn) {
+    copyLinkBtn.addEventListener('click', async () => {
+      const href = copyLinkBtn.dataset.href || ($('resultLink') && $('resultLink').href) || ''
+      const ok = await copyToClipboard(href)
+      if (!ok) return
+
+      const old = copyLinkBtn.textContent
+      copyLinkBtn.textContent = t('copied')
+      setTimeout(() => {
+        copyLinkBtn.textContent = old
+      }, 900)
+    })
+  }
+
   if (mode) {
     mode.addEventListener('change', () => {
       const isText = mode.value === 'text'
@@ -386,6 +443,21 @@ function init() {
 
   initEditors()
   bindComposeUI()
+
+  const copyCodeBtn = $('copyCode')
+  if (copyCodeBtn) {
+    copyCodeBtn.addEventListener('click', async () => {
+      const text = viewerEditor ? viewerEditor.getValue() : ''
+      const ok = await copyToClipboard(text)
+      if (!ok) return
+
+      const old = copyCodeBtn.textContent
+      copyCodeBtn.textContent = t('copied')
+      setTimeout(() => {
+        copyCodeBtn.textContent = old
+      }, 900)
+    })
+  }
 
   const pasteId = getPasteIdFromPath()
   if (pasteId) {

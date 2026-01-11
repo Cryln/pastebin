@@ -47,6 +47,7 @@ body {
   border: 1px solid var(--border);
   border-radius: 14px;
   padding: 16px;
+  max-width: 100%;
 }
 
 .h1 { margin: 0 0 10px; font-size: 18px; }
@@ -88,6 +89,12 @@ textarea {
   border-radius: 12px;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   font-size: 13px;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.CodeMirror-scroll {
+  overflow-x: auto;
 }
 
 /* Blend CodeMirror theme into the app's glassy panels */
@@ -235,6 +242,21 @@ textarea {
   align-items: center;
 }
 
+.resultCell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.resultCell a {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 a { color: var(--brand); }
 a:hover { color: #bdeafe; }
 
@@ -247,6 +269,16 @@ a:hover { color: #bdeafe; }
 }
 
 .viewerActions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+@media (max-width: 520px) {
+  .viewerHeader {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .viewerActions {
+    width: 100%;
+  }
+}
 
 pre.code {
   margin: 0;

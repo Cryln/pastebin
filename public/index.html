@@ -105,7 +105,10 @@
         <div id="result" class="result hidden">
           <div class="resultRow">
             <span id="linkLabel" class="muted">Link</span>
-            <a id="resultLink" href="#" target="_blank" rel="noreferrer"></a>
+            <div class="resultCell">
+              <a id="resultLink" href="#" target="_blank" rel="noreferrer"></a>
+              <button id="copyLink" class="btn" type="button">Copy</button>
+            </div>
           </div>
           <div class="resultRow">
             <span id="rawLabel" class="muted">Raw</span>
@@ -122,6 +125,7 @@
           </div>
           <div class="viewerActions">
             <a id="downloadBtn" class="btn" href="#">Download</a>
+            <button id="copyCode" class="btn" type="button">Copy code</button>
             <a id="rawBtn" class="btn" href="#" target="_blank" rel="noreferrer">Raw</a>
             <a class="btn" href="/">New</a>
           </div>
