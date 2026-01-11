@@ -42,12 +42,22 @@ body {
   gap: 16px;
 }
 
+/*
+  Prevent long, unbroken code lines from forcing the grid item (card)
+  to expand beyond the viewport on mobile. This keeps the card fluid
+  and lets the editor handle horizontal scrolling.
+*/
+.container > * {
+  min-width: 0;
+}
+
 .card {
   background: var(--panel);
   border: 1px solid var(--border);
   border-radius: 14px;
   padding: 16px;
   max-width: 100%;
+  min-width: 0;
 }
 
 .h1 { margin: 0 0 10px; font-size: 18px; }
@@ -91,6 +101,7 @@ textarea {
   font-size: 13px;
   width: 100% !important;
   max-width: 100% !important;
+  min-width: 0 !important;
 }
 
 .CodeMirror-scroll {
