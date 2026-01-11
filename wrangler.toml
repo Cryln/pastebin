@@ -2,6 +2,10 @@ name = "paste-orcax"
 main = "src/index.ts"
 compatibility_date = "2026-01-11"
 
+routes = [
+  { pattern = "paste.orcax.net/*", zone_name = "orcax.net" }
+]
+
 [assets]
 directory = "./public"
 binding = "ASSETS"
@@ -18,4 +22,3 @@ MAX_EXPIRES_SECONDS = "2592000"
 
 [triggers]
 crons = ["0 */6 * * *"]
-
