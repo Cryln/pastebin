@@ -41,7 +41,6 @@ const i18n = {
     copy: '复制',
     copyCode: '复制代码',
     copied: '已复制',
-    captchaRequired: '请先完成验证码',
     uploading: '上传中...',
     loading: '加载中...',
     selectFile: '请选择文件',
@@ -228,10 +227,6 @@ async function createPaste() {
   const expiresInSeconds = expiresEl.value
 
   const captchaToken = getCaptchaToken()
-  if (!captchaToken) {
-    setStatus(statusEl, t('captchaRequired'))
-    return
-  }
 
   setStatus(statusEl, t('uploading'))
   show($('result'), false)

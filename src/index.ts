@@ -196,13 +196,17 @@ async function handleSpaEntry(req: Request, env: Env) {
 
   const contentType = res.headers.get('content-type') ?? ''
   if (!contentType.includes('text/html')) return res
-  if (!env.TURNSTILE_SITE_KEY) return res
 
   const html = await res.text()
-  const updated = html.replace(
-    /data-sitekey="\{\{TURNSTILE_SITE_KEY}}"/,
-    `data-sitekey="${env.TURNSTILE_SITE_KEY}"`
-  )
+  let updated = html
+
+  if (env.TURNSTILE_SITE_KEY) {
+    // Inject Turnstile widget wiring only when a sitekey is configured.
+    updated = updated.replace(
+      '<div id="captcha"',
+      `<div id="captcha" class="cf-turnstile" data-sitekey="${env.TURNSTILE_SITE_KEY}"`
+    )
+  }
 
   return new Response(updated, {
     status: res.status,

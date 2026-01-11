@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "dev": "wrangler dev --local --persist-to .wrangler/state",
+    "dev": "bash -lc 'set -a; [ -f .dev.vars ] && . .dev.vars; set +a; wrangler dev --local --persist-to .wrangler/state'",
     "dev:remote": "wrangler dev",
     "deploy": "wrangler deploy",
     "lint": "eslint .",
