@@ -48,6 +48,28 @@ function isExpired(meta: PasteMeta) {
   return Date.now() >= Date.parse(meta.expiresAt)
 }
 
+async function verifyTurnstile(req: Request, env: Env, token: unknown): Promise<boolean> {
+  // If secret is not configured, treat captcha as disabled (no-op).
+  if (!env.TURNSTILE_SECRET) return true
+
+  const value = typeof token === 'string' ? token : ''
+  if (!value) return false
+
+  const formData = new FormData()
+  formData.set('secret', env.TURNSTILE_SECRET)
+  formData.set('response', value)
+  const ip = req.headers.get('cf-connecting-ip')
+  if (ip) formData.set('remoteip', ip)
+
+  const res = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+    method: 'POST',
+    body: formData
+  })
+  if (!res.ok) return false
+  const data = (await res.json().catch(() => null)) as null | { success?: boolean }
+  return !!(data && data.success)
+}
+
 async function handleCreatePaste(req: Request, env: Env) {
   const maxBytes = Number(env.MAX_UPLOAD_BYTES)
   const contentType = req.headers.get('content-type') ?? ''
@@ -65,8 +87,12 @@ async function handleCreatePaste(req: Request, env: Env) {
       filename?: unknown
       language?: unknown
       expiresInSeconds?: unknown
+      captchaToken?: unknown
     }
     if (!body || typeof body.content !== 'string') return badRequest('`content` must be a string')
+
+    const captchaOk = await verifyTurnstile(req, env, body.captchaToken)
+    if (!captchaOk) return badRequest('Captcha verification failed')
 
     const encoder = new TextEncoder()
     const bytes = encoder.encode(body.content)
@@ -95,6 +121,8 @@ async function handleCreatePaste(req: Request, env: Env) {
 
   if (contentType.includes('multipart/form-data')) {
     const form = await req.formData()
+    const captchaOk = await verifyTurnstile(req, env, form.get('captchaToken'))
+    if (!captchaOk) return badRequest('Captcha verification failed')
     const file = form.get('file')
     if (!(file instanceof File)) return badRequest('`file` field is required')
 

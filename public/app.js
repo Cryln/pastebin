@@ -41,6 +41,7 @@ const i18n = {
     copy: '复制',
     copyCode: '复制代码',
     copied: '已复制',
+    captchaRequired: '请先完成验证码',
     uploading: '上传中...',
     loading: '加载中...',
     selectFile: '请选择文件',
@@ -203,6 +204,15 @@ function initChoices(selectEl, opts = {}) {
   }
 }
 
+function getCaptchaToken() {
+  if (!window.turnstile || !window.turnstile.getResponse) return ''
+  try {
+    return window.turnstile.getResponse()
+  } catch {
+    return ''
+  }
+}
+
 async function createPaste() {
   const modeEl = $('mode')
   const filenameEl = $('filename')
@@ -217,6 +227,12 @@ async function createPaste() {
   const language = syntaxEl.value || undefined
   const expiresInSeconds = expiresEl.value
 
+  const captchaToken = getCaptchaToken()
+  if (!captchaToken) {
+    setStatus(statusEl, t('captchaRequired'))
+    return
+  }
+
   setStatus(statusEl, t('uploading'))
   show($('result'), false)
 
@@ -226,7 +242,7 @@ async function createPaste() {
     res = await fetch('/api/paste', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ content, filename, language, expiresInSeconds })
+      body: JSON.stringify({ content, filename, language, expiresInSeconds, captchaToken })
     })
   } else {
     const fileInput = $('file')
@@ -240,6 +256,7 @@ async function createPaste() {
     form.set('filename', filename)
     form.set('language', language || '')
     form.set('expiresInSeconds', expiresInSeconds)
+    form.set('captchaToken', captchaToken)
     res = await fetch('/api/paste', { method: 'POST', body: form })
   }
 
@@ -263,6 +280,14 @@ async function createPaste() {
   }
   show($('result'), true)
   setStatus(statusEl, '')
+
+  if (window.turnstile && window.turnstile.reset) {
+    try {
+      window.turnstile.reset()
+    } catch {
+      // ignore
+    }
+  }
 
   const copyBtn = $('copyLink')
   if (copyBtn) {

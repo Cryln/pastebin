@@ -215,6 +215,23 @@ textarea {
   margin-top: 12px;
 }
 
+/* Turnstile captcha container - keep it subtle and aligned */
+#captcha {
+  display: inline-block;
+  margin-top: 6px;
+}
+
+.cf-turnstile {
+  transform: scale(0.92);
+  transform-origin: left top;
+}
+
+@media (max-width: 520px) {
+  .cf-turnstile {
+    transform: scale(0.86);
+  }
+}
+
 .btn {
   display: inline-flex;
   align-items: center;

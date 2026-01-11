@@ -97,6 +97,10 @@
           <input id="file" type="file" />
         </div>
 
+        <div class="field">
+          <div id="captcha" class="cf-turnstile" data-sitekey="YOUR_TURNSTILE_SITE_KEY"></div>
+        </div>
+
         <div class="actions">
           <button id="submit" class="btn primary">Create</button>
           <div id="status" class="status"></div>
@@ -154,6 +158,11 @@
       src="https://cdnjs.cloudflare.com/ajax/libs/choices.js/10.2.0/choices.min.js"
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
+    ></script>
+    <script
+      src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+      async
+      defer
     ></script>
     <script type="module" src="/app.js"></script>
   </body>
