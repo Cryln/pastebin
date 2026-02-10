@@ -13,7 +13,7 @@ binding = "ASSETS"
 [[r2_buckets]]
 binding = "R2"
 bucket_name = "paste-orcax"
-preview_bucket_name = "paste-orcax-dev"
+preview_bucket_name = "paste-orcax"
 
 [vars]
 MAX_UPLOAD_BYTES = "10485760"
